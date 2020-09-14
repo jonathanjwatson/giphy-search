@@ -13,7 +13,6 @@ $(document).ready(function () {
   function init() {
     var currentLocalStorage = localStorage.getItem("previousSearchTerms");
 
-    console.log(currentLocalStorage);
     if (currentLocalStorage !== null) {
       previousSearchTerms = JSON.parse(currentLocalStorage);
     } else {
@@ -21,8 +20,43 @@ $(document).ready(function () {
     }
   }
 
+  function displayPreviousSearches() {
+    init();
+    $("#previous-searches").empty();
+    for (var i = 0; i < previousSearchTerms.length; i++) {
+      console.log(previousSearchTerms[i]);
+      $("#previous-searches").prepend(
+        $(
+          "<div class='row '><button class='btn btn-info previous'>" +
+            previousSearchTerms[i] +
+            "</button></div>"
+        )
+      );
+    }
+  }
+
+  function getAndDisplayGifs(searchTerm) {
+    var queryURL =
+      "https://api.giphy.com/v1/gifs/search?api_key=" +
+      apiKey +
+      "&limit=5&q=" +
+      searchTerm;
+    $.ajax({
+      url: queryURL,
+      method: "GET",
+    }).then(function (response) {
+      giphyDisplayEl.empty();
+      for (var i = 0; i < response.data.length; i++) {
+        giphyDisplayEl.append(
+          $("<img>").attr("src", response.data[i].images.fixed_width.url)
+        );
+      }
+    });
+  }
+
   // FUNCTION CALLS
   init();
+  displayPreviousSearches();
 
   // EVENT LISTENERS
   $("#search-form").on("submit", function (event) {
@@ -35,37 +69,17 @@ $(document).ready(function () {
     // }else {
     //     //  Whatever we're gonna do.
     // }
+    getAndDisplayGifs(searchTerm);
+    previousSearchTerms.push(searchTerm);
+    localStorage.setItem(
+      "previousSearchTerms",
+      JSON.stringify(previousSearchTerms)
+    );
+    displayPreviousSearches();
+  });
 
-    var queryURL =
-      "https://api.giphy.com/v1/gifs/search?api_key=" +
-      apiKey +
-      "&limit=5&q=" +
-      searchTerm;
-    $.ajax({
-      url: queryURL,
-      method: "GET",
-    }).then(function (response) {
-      //   console.log(response.data[0].images.fixed_width.url);
-      giphyDisplayEl.empty();
-      //   var imageDiv = $("<div>");
-      //   imageDiv.addClass("row");
-      //   for (var i = 0; i < response.data.length; i++) {
-      //     var giphyDiv = $("<div>");
-      //     giphyDiv.addClass("col-md-3");
-      //     giphyDiv.append(
-      //       $("<img>").attr("src", response.data[i].images.fixed_width.url)
-      //     );
-      //     imageDiv.append(giphyDiv);
-      //   }
-      //   giphyDisplayEl.append(imageDiv);
-      for (var i = 0; i < response.data.length; i++) {
-        giphyDisplayEl.append(
-          $("<img>").attr("src", response.data[i].images.fixed_width.url)
-        );
-      }
-      console.log(previousSearchTerms);
-      previousSearchTerms.push(searchTerm);
-      localStorage.setItem("previousSearchTerms", JSON.stringify(searchTerm));
-    });
+  $(".previous").on("click", function (event) {
+    var searchTerm = $(this).text();
+    getAndDisplayGifs(searchTerm);
   });
 });

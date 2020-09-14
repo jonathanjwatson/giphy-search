@@ -38,13 +38,22 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-3">
-          <form id="search-form">
-            <div class="form-group">
-              <label for="search-term">Giphy Search Term</label>
-              <input type="text" class="form-control" id="search-term" />
+          <div class="row">
+            <div class="col-sm-12">
+              <form id="search-form">
+                <div class="form-group">
+                  <label for="search-term">Giphy Search Term</label>
+                  <input type="text" class="form-control" id="search-term" />
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
+          </div>
+          <div class="row">
+              <div class="col-sm-12" id="previous-searches">
+
+              </div>
+          </div>
         </div>
         <div class="col-sm-9" id="giphy-display"></div>
       </div>
