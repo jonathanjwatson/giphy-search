@@ -2,6 +2,7 @@
 
 $(document).ready(function () {
   // DOM VARIABLES
+  var giphyDisplayEl = $("#giphy-display");
 
   // JS VARIABLES
 
@@ -21,7 +22,33 @@ $(document).ready(function () {
     //     //  Whatever we're gonna do.
     // }
     var apiKey = "FwN7nCdL4yA9BMFCc7q5OnTvBbt6jU0s";
-    var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=" + apiKey + "&limit=5&q=" + searchTerm;
-    
+    var queryURL =
+      "https://api.giphy.com/v1/gifs/search?api_key=" +
+      apiKey +
+      "&limit=5&q=" +
+      searchTerm;
+    $.ajax({
+      url: queryURL,
+      method: "GET",
+    }).then(function (response) {
+      console.log(response.data[0].images.fixed_width.url);
+      giphyDisplayEl.empty();
+    //   var imageDiv = $("<div>");
+    //   imageDiv.addClass("row");
+    //   for (var i = 0; i < response.data.length; i++) {
+    //     var giphyDiv = $("<div>");
+    //     giphyDiv.addClass("col-md-3");
+    //     giphyDiv.append(
+    //       $("<img>").attr("src", response.data[i].images.fixed_width.url)
+    //     );
+    //     imageDiv.append(giphyDiv);
+    //   }
+    //   giphyDisplayEl.append(imageDiv);
+      for (var i = 0; i < response.data.length; i++) {
+        giphyDisplayEl.append(
+          $("<img>").attr("src", response.data[i].images.fixed_width.url)
+        );
+      }
+    });
   });
 });
